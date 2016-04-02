@@ -9,14 +9,15 @@ data <- eventReactive(input$go,{
   print("enter reactive")
   req(input$handle)
   print(input$handle)
-maxTweets <- userTimeline(input$handle, n=3200, excludeReplies=FALSE, includeRts=TRUE )
+maxTweets <- userTimeline(input$handle, n=input$count, excludeReplies=FALSE, includeRts=TRUE )
 
 tweets <- twListToDF(maxTweets)
 
-
+tz <- timeZone[timeZone$UTC_Offset==input$offset,]$Location
+print(tz)
 
 tweets$timestamp <- ymd_hms(tweets$created)
-tweets$timestamp <- with_tz(tweets$created, "America/Chicago")
+tweets$timestamp <- with_tz(tweets$created, tz)
 #print(glimpse(tweets))
 info=list(tweets=tweets)
 
@@ -39,7 +40,14 @@ output$hourlyChart <- renderPlotly({
   
   print(glimpse(df))
   
-    plot_ly(df,x=hour, y=n, type="bar") 
+    plot_ly(df,x=hour, y=n, type="bar",
+            hoverinfo = "text",
+            text = paste("Tweets:",n,"<br>Hr from:",hour)) %>%
+    layout(hovermode = "closest",
+           xaxis=list(title="24-hour Clock"),
+           yaxis=list(title="Tweet Count")
+           
+    ) 
   
   
 })

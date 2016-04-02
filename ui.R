@@ -9,6 +9,8 @@ dashboardPage(
     includeCSS("custom.css"),
 inputPanel(
     textInput("handle", "Enter tweet handle", value="pssguy"),
+    numericInput("offset","UTC Offset", value=-8,min=-11,max=12,  step=1),
+    sliderInput("count","Number of tweets",min=20,max=3200,value=200,step=20,sep=''),
     actionButton("go","Get Data")
 ),
     hr(),
