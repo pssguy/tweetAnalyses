@@ -44,22 +44,42 @@ tags$body(
           column(
             width = 6,
             box( width = 12,
-                 status = "success",solidHeader = TRUE,title = "Tweets per Month",
+                 status = "success",solidHeader = TRUE,title = "Tweets per Month - Hover for details, click for tweets",
                  collapsible = T,collapsed = F,
                  plotlyOutput("monthlyChart")
             ),
             box( width = 12,
-                 status = "success",solidHeader = TRUE,title = "Tweets by Weekday",
+                 status = "success",solidHeader = TRUE,title = "Tweets by Weekday - Hover for details, click for tweets",
                  collapsible = T,collapsed = T,
                  plotlyOutput("weekdayChart")
             ),
         box( width = 12,
-          status = "success",solidHeader = TRUE,title = "Tweets by Time of Day",
+          status = "success",solidHeader = TRUE,title = "Tweets by Time of Day - Hover for details, click for tweets",
           collapsible = T,collapsed = T,
           plotlyOutput("hourlyChart")
         )
         
+          ),
+        column(
+          width = 6,
+          box( width = 12,
+               status = "success",solidHeader = TRUE,title = "Tweets by Selected Month",
+               collapsible = T,collapsed = F,
+               DT::dataTableOutput("monthlyTable")
+          ),
+          box( width = 12,
+               status = "success",solidHeader = TRUE,title = "Tweets by Selected Weekday",
+               collapsible = T,collapsed = F,
+               DT::dataTableOutput("weekdayTable")
+          ),
+          box( width = 12,
+               status = "success",solidHeader = TRUE,title = "Tweets by Selected Hour",
+               collapsible = T,collapsed = F,
+               DT::dataTableOutput("hourlyTable")
           )
+         
+          
+        )
         )
         
         
