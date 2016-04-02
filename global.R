@@ -23,6 +23,8 @@ library(DT)
 library(plotly)
 library(twitteR)
 library(base64enc)
+library(markdown)
+library(rmarkdown)
 
 ##OUauth
 # setup_twitter_oauth(consumer_key="xxx", consumer_secret="xxx",

@@ -2,11 +2,12 @@
 
 
 dashboardPage(
-  skin = "green",
+  skin = "green",title = "Tweet Analyses",
   dashboardHeader(title = "Tweet Analyses"),
   
   dashboardSidebar(
     includeCSS("custom.css"),
+    includeMarkdown("about.md"),
 inputPanel(
     textInput("handle", "Enter tweet handle", value="pssguy"),
     numericInput("offset","UTC Offset", value=-8,min=-11,max=12,  step=1),
