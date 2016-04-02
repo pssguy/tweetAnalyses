@@ -40,15 +40,26 @@ tags$body(
     tabItems(
       tabItem(
         "tweeter",
-        box(
+        fluidRow(
+          column(
+            width = 6,
+            box( width = 12,
+                 status = "success",solidHeader = TRUE,title = "Tweets per Month",
+                 collapsible = T,collapsed = F,
+                 plotlyOutput("monthlyChart")
+            ),
+            box( width = 12,
+                 status = "success",solidHeader = TRUE,title = "Tweets by Weekday",
+                 collapsible = T,collapsed = T,
+                 plotlyOutput("weekdayChart")
+            ),
+        box( width = 12,
           status = "success",solidHeader = TRUE,title = "Tweets by Time of Day",
-          collapsible = T,collapsed = F,
+          collapsible = T,collapsed = T,
           plotlyOutput("hourlyChart")
-        ),
-        box(
-          status = "success",solidHeader = TRUE,title = "Tweets per Month",
-          collapsible = T,collapsed = F,
-          plotlyOutput("monthlyChart")
+        )
+        
+          )
         )
         
         

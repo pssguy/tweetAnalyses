@@ -55,6 +55,23 @@ output$hourlyChart <- renderPlotly({
   
 })
 
+output$weekdayChart <- renderPlotly({
+  
+  data()$tweets  %>% 
+    mutate(wday=wday(timestamp, label = TRUE)) %>% 
+    group_by(wday) %>% 
+    tally() %>% 
+    # ungroup() %>% 
+    # group_by(year) %>% 
+    plot_ly(x=wday,y=n,type="bar")%>%
+    layout(hovermode = "closest",
+           xaxis=list(title=" "),
+           yaxis=list(title="Tweet Count")
+    )
+  
+  
+})
+
 output$monthlyChart <- renderPlotly({
   
   data()$tweets   %>% 
