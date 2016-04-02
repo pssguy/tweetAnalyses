@@ -10,7 +10,7 @@ dashboardPage(
 inputPanel(
     textInput("handle", "Enter tweet handle", value="pssguy"),
     numericInput("offset","UTC Offset", value=-8,min=-11,max=12,  step=1),
-    sliderInput("count","Number of tweets",min=20,max=3200,value=200,step=20,sep=''),
+    sliderInput("count","Max. number of tweets",min=20,max=3200,value=200,step=20,sep=''),
     actionButton("go","Get Data")
 ),
     hr(),
@@ -43,7 +43,12 @@ tags$body(
         box(
           status = "success",solidHeader = TRUE,title = "Tweets by Time of Day",
           collapsible = T,collapsed = F,
-        plotlyOutput("hourlyChart")
+          plotlyOutput("hourlyChart")
+        ),
+        box(
+          status = "success",solidHeader = TRUE,title = "Tweets per Month",
+          collapsible = T,collapsed = F,
+          plotlyOutput("monthlyChart")
         )
         
         

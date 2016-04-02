@@ -19,6 +19,9 @@ print(tz)
 tweets$timestamp <- ymd_hms(tweets$created)
 tweets$timestamp <- with_tz(tweets$created, tz)
 #print(glimpse(tweets))
+
+#write_csv(tweets,"testTweets.csv")
+
 info=list(tweets=tweets)
 
 return(info)
@@ -52,3 +55,19 @@ output$hourlyChart <- renderPlotly({
   
 })
 
+output$monthlyChart <- renderPlotly({
+  
+  data()$tweets   %>% 
+    mutate(year=year(timestamp),month=month(timestamp, label = TRUE)) %>% 
+    group_by(month,year) %>% 
+    tally() %>% 
+    ungroup() %>% 
+    group_by(year) %>% 
+    plot_ly(x=month,y=n,color=as.factor(year),colors = "Set1",mode="lines+markers") %>%
+    layout(hovermode = "closest",
+           xaxis=list(title=" "),
+           yaxis=list(title="Tweet Count")
+    )
+  
+  
+})

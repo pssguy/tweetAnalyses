@@ -25,10 +25,12 @@ library(twitteR)
 library(base64enc)
 
 ##OUauth
-setup_twitter_oauth(consumer_key="xxx", consumer_secret="xxx",
-                    access_token="xxx", access_secret="xxx")
+# setup_twitter_oauth(consumer_key="xxx", consumer_secret="xxx",
+#                     access_token="xxx", access_secret="xxx")
+
+
 # [1] "Using direct authentication"
-print("gap1")
+
 
 ## not sure required
 options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")))
