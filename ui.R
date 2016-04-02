@@ -6,16 +6,18 @@ dashboardPage(
   dashboardHeader(title = "Tweet Analyses"),
   
   dashboardSidebar(
-    #includeCSS("custom.css"),
-
+    includeCSS("custom.css"),
+inputPanel(
     textInput("handle", "Enter tweet handle", value="pssguy"),
+    actionButton("go","Get Data")
+),
     hr(),
     
     sidebarMenu(
       id = "sbMenu",
       
       menuItem(
-        "tweeter", selected = TRUE
+        "Time", tabName = "tweeter",icon = icon("line-chart"), selected=T
       ),
      
 
@@ -35,7 +37,12 @@ tags$body(
   dashboardBody(
     tabItems(
       tabItem(
-        "tweeter"
+        "tweeter",
+        box(
+          status = "success",solidHeader = TRUE,title = "Tweets by Time of Day",
+          collapsible = T,collapsed = F,
+        plotlyOutput("hourlyChart")
+        )
         
         
         

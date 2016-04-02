@@ -1,6 +1,7 @@
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
- # source("code/massKillings.R", local = TRUE)
+  print("enter server")
+  source("code/timeAnalysis.R", local = TRUE)
   
 })
