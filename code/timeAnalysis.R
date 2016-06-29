@@ -2,34 +2,34 @@
 
 ## Initially get max available all types
 
-print("enter timeanalysis code")
 
-data <- eventReactive(input$go,{
 
-  print("enter reactive")
-  req(input$handle)
-  print(input$handle)
-maxTweets <- userTimeline(input$handle, n=input$count, excludeReplies=FALSE, includeRts=TRUE )
-
-tweets <- twListToDF(maxTweets)
-
-tz <- timeZone[timeZone$UTC_Offset==input$offset,]$Location
-print(tz)
-
-tweets$timestamp <- ymd_hms(tweets$created)
-tweets$timestamp <- with_tz(tweets$created, tz)
-
-tweets <- tweets %>% 
-  mutate(hour=hour(timestamp),wday=wday(timestamp, label = TRUE),year=year(timestamp),month=month(timestamp, label = TRUE))
-#print(glimpse(tweets))
-
-#write_csv(tweets,"testTweets.csv")
-
-info=list(tweets=tweets)
-
-return(info)
-
-})
+# data <- eventReactive(input$go,{
+# 
+#   print("enter reactive")
+#   req(input$handle)
+#   print(input$handle)
+# maxTweets <- userTimeline(input$handle, n=input$count, excludeReplies=FALSE, includeRts=TRUE )
+# 
+# tweets <- twListToDF(maxTweets)
+# 
+# tz <- timeZone[timeZone$UTC_Offset==input$offset,]$Location
+# print(tz)
+# 
+# tweets$timestamp <- ymd_hms(tweets$created)
+# tweets$timestamp <- with_tz(tweets$created, tz)
+# 
+# tweets <- tweets %>% 
+#   mutate(hour=hour(timestamp),wday=wday(timestamp, label = TRUE),year=year(timestamp),month=month(timestamp, label = TRUE))
+# #print(glimpse(tweets))
+# 
+# #write_csv(tweets,"testTweets.csv")
+# 
+# info=list(tweets=tweets)
+# 
+# return(info)
+# 
+# })
 
 
 
