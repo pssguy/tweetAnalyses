@@ -2,39 +2,43 @@
 title: "Twitter Trends"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-library(shiny)
+#library(shiny)
 library(leaflet)
 library(htmltools)
 library(DT)
+library(twitteR)
+library(readr)
 library(dplyr)
 
-# library(highcharter)
-# library(plotly)
-(getwd())
-numeroUno <- read.csv("C:/Users/Andrew/Documents/R/tweetAnalyses/data/testData.csv")
-allTrends <- read.csv("C:/Users/Andrew/Documents/R/tweetAnalyses/data/trends_ex2.csv")
+
+numeroUno <- read.csv("data/testData.csv")
+allTrends <- read.csv("data/trends_ex2.csv")
+locations <- read.csv("data/trendLocations.csv")
 print(glimpse(allTrends))
 print("allTrends")
 
 
 ```
 
-Column {data-width=650}
+Column 
 -----------------------------------------------------------------------
 
 ```{r}
+
+## map does not fit screen
 output$map <- renderLeaflet({
 
   numeroUno %>% 
   leaflet() %>% 
   addTiles() %>%
+     
   addMarkers(lng = ~lon, lat = ~lat,layerId = ~woeid,
              label = mapply(function(x, y) {
                HTML(sprintf("<em>%s:<br></em> %s", htmlEscape(x), htmlEscape(y)))},
@@ -42,7 +46,7 @@ output$map <- renderLeaflet({
              labelOptions = lapply(1:nrow(numeroUno), function(x) {
                labelOptions(opacity=0.9)
              })
-  )
+  ) 
 
 })
 
@@ -52,62 +56,52 @@ leafletOutput('map')
 
 
 
-Column {data-width=350}
+
+
+
+
+Column 
 -----------------------------------------------------------------------
 
 ```{r}
 
 idData <- eventReactive(input$map_marker_click, {
-  print("here")
   x <- input$map_marker_click
-  print("x")
- # print(x)
-  print(x$id[1])
-  print("x shown")
-df <-  allTrends %>% 
-    filter(woeid==x$id[1])
-print("glimpse(df)")
-#print(glimpse(df))
-  info=list(df=df)
+  
+  df <-  allTrends %>%
+  filter(woeid == x$id[1])
+  
+  info = list(df = df)
   return(info)
-
-})
-
-
-# data_for_chart <- reactive({
-#  print("there")
-#   return(allTrends[allTrends$woeid == click_marker(), ])
-# 
-# })
-
-DT::renderDataTable({
+  
+  })
+  
+  
+  
+  DT::renderDataTable({
   req(idData())
   
   data <- idData()$df
   
   
-   data %>% 
-     select(trend=name) %>%
-                         DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
-})
-#
-DT::dataTableOutput("table")
+  data %>%
+  
+   mutate(link=paste0("<a href=\"",url,"\" target=\"_blank\">", name,"</a>")) %>% 
+    select(link) %>%
+  DT::datatable(
+  class = 'compact stripe hover row-border order-column',
+  rownames = TRUE,
+  selection = "single",
+  escape = FALSE,
+  caption= "caption",
+  options = list(
+  paging = TRUE,
+  searching = TRUE,
+  info = FALSE
+  )
+  )
+  })
 
-# data_for_chart <- reactive({
-# 
-#   return(allTrends[df$ids == click_marker(), ])
-# 
-# })
-# 
-# output$chart <- renderHighchart({
-# 
-#   highchart() %>%
-#     hc_chart(type = 'column') %>%
-#     hc_add_series(data = c(data_for_chart()$amounts1,
-#                            data_for_chart()$amounts2))
-# 
-# })
-# 
-# highchartOutput('chart')
 
 ```
+
