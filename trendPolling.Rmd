@@ -1,0 +1,104 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny    
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+
+library(leaflet)
+library(htmltools)
+library(DT)
+library(twitteR)
+library(readr)
+library(dplyr)
+
+canada <- read_csv("data/canada.csv")
+
+
+## do automatic repolling
+
+# from http://shiny.rstudio.com/gallery/reactive-poll-and-file-reader.html
+
+pollData <- reactivePoll(40000, session,
+    # This function returns the time that the file was last
+    # modified (and moves on to valuefunc if there is a difference)
+   
+    
+    checkFunc = function() {
+      if (file.exists("data/canTrends.csv"))
+        file.info("data/canTrends.csv")$mtime[1]
+      else
+        ""
+    },
+    
+    valueFunc = function() {
+  
+      oldData <- read_csv("data/canTrends.csv")
+      print(nrow(oldData))
+for (i in 1:nrow(canada)) {
+  
+  print(i)
+  tempdf <-  getTrends(woeid=canada$woeid[i])
+  
+  if (i!=1) {
+    df <- rbind(df,tempdf)
+  } else {
+    df <- tempdf
+  }
+  
+}
+df$time <- Sys.time()
+
+df <- rbind(oldData,df)
+write_csv(df,"data/canTrends.csv")
+return(df)
+    }
+
+    
+ 
+  )
+     
+
+
+
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+
+DT::renderDataTable({
+  
+  print("enter")
+  pollData() %>% 
+    arrange(desc(time)) %>% 
+    select(time,name) %>% 
+    DT::datatable()
+})
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
