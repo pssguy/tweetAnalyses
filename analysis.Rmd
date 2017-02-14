@@ -1,0 +1,70 @@
+---
+title: "tweet Analysis"
+output: html_notebook
+runtime: shiny
+---
+
+ 
+
+```{r setup, warning=FALSE, message=FALSE}
+
+library(rtweet)
+
+library(plotly)
+library(DT)
+library(tidyverse)
+
+
+```
+Enter a user name - yours or anyones
+
+```{r carpentry}
+
+textInput("user","Enter Screen Name(twitterhandle)", value="JennyBryan")
+
+
+data <- reactive({
+  req(input$user)
+  
+  friends <- get_friends("JennyBryan")
+  df <-lookup_users(friends$user_id)
+  
+  info=list(df=df)
+  return(info)
+  
+  
+})
+
+
+```
+
+```{r output}
+
+output$plot <- renderPlotly({
+  
+  data()$df %>% 
+  plot_ly(x=~log10(friends_count),y=~log10(followers_count)) %>% 
+  add_markers(hoverinfo="text", showlegend=FALSE, size=~statuses_count,
+              text=~paste0(name,"<br>Tweets: ",statuses_count,
+                           "<br>Followers: ",followers_count,
+                           "<br>Following: ",friends_count,"<br>",
+                           description)) %>% 
+  # add_markers(data=me,x=~log10(friends_count),y=~log10(followers_count),color=I("red"), name=~
+  #               name,
+  #             hoverinfo="text", 
+  #             text=~paste0(name,"<br>Followers: ",followers_count,
+  #                          "<br>Following: ",friends_count,"<br>",
+  #                          description)) %>% 
+  layout(title="Who Jenny Bryan is following (518)",
+         xaxis=list(title="Following Count(log10"),
+         yaxis=list(title="Followers Count(log10")
+  ) %>%
+  config(displayModeBar = F, showLink = F)
+
+  
+})
+
+plotlyOutput("plot")
+
+
+```
