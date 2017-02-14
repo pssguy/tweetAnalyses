@@ -21,12 +21,13 @@ Enter a user name - yours or anyones
 ```{r carpentry}
 
 textInput("user","Enter Screen Name(twitterhandle)", value="JennyBryan")
+actionButton(inputId="go",label="Go")
 
 
-data <- reactive({
+data <- eventReactive(input$go,{
   req(input$user)
-  
-  friends <- get_friends("JennyBryan")
+  print(input$user)
+  friends <- get_friends(input$user)
   df <-lookup_users(friends$user_id)
   
   info=list(df=df)
@@ -42,6 +43,11 @@ data <- reactive({
 
 output$plot <- renderPlotly({
   
+  req(data())
+  follows <- nrow(data()$df)
+  
+theTitle<-  paste0("Who ",input$user," is following (",follows,")<br> hover for info")
+  
   data()$df %>% 
   plot_ly(x=~log10(friends_count),y=~log10(followers_count)) %>% 
   add_markers(hoverinfo="text", showlegend=FALSE, size=~statuses_count,
@@ -55,9 +61,9 @@ output$plot <- renderPlotly({
   #             text=~paste0(name,"<br>Followers: ",followers_count,
   #                          "<br>Following: ",friends_count,"<br>",
   #                          description)) %>% 
-  layout(title="Who Jenny Bryan is following (518)",
-         xaxis=list(title="Following Count(log10"),
-         yaxis=list(title="Followers Count(log10")
+  layout(title=theTitle,
+         xaxis=list(title="Following Count(log10)"),
+         yaxis=list(title="Followers Count(log10)")
   ) %>%
   config(displayModeBar = F, showLink = F)
 
@@ -65,6 +71,16 @@ output$plot <- renderPlotly({
 })
 
 plotlyOutput("plot")
+
+output$table <- DT::renderDataTable({
+  
+  data()$df %>% 
+  arrange(desc(followers_count)) %>% 
+  select(name,screen_name,followers=followers_count,following=friends_count,tweets=statuses_count,description) %>% 
+     DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
+})
+
+DT::dataTableOutput("table")
 
 
 ```
