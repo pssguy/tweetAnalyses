@@ -16,7 +16,9 @@ library(tidyverse)
 
 
 ```
-Enter a user name - yours or anyones
+
+
+
 
 ```{r carpentry}
 
@@ -76,8 +78,13 @@ output$table <- DT::renderDataTable({
   
   data()$df %>% 
   arrange(desc(followers_count)) %>% 
-  select(name,screen_name,followers=followers_count,following=friends_count,tweets=statuses_count,description) %>% 
-     DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
+  mutate(image= paste0("<img src=",profile_image_url,"></img>")) %>% 
+  mutate(webUrl=paste0("https://twitter.com/",screen_name)) %>% 
+  mutate(link = paste0(
+    "<a href=\"",webUrl,"\" target=\"_blank\">", screen_name,"</a>"
+  )) %>% 
+  select(image,name,link,followers=followers_count,following=friends_count,tweets=statuses_count,description) %>% 
+  DT::datatable(escape = FALSE,class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
 })
 
 DT::dataTableOutput("table")
